@@ -42,26 +42,17 @@ class _HomePageState extends State<HomePage> {
 
     });
 
-    Future.delayed(const Duration(seconds: 1), () {
-
+    await QA.send_question(msg).then((value){
+      print(value.body);
       setState(() {
+        print("before");
+        print(list_message);
         list_message.removeLast();
-        list_message.add(Message( content:"I am having troubles answering your question, please try again! ",isQuesion: false));
-
+        print("after");
+        print(list_message);
       });
-
-
-
-    });
-
-
-
-
-    return false;
-
-    QA.send_question(msg).then((value){
       if(value.statusCode!=200){
-
+        print("hi");
        setState(() {
          list_message.add(Message( content:"I am having troubles answering your question, please try again! ",isQuesion: false));
        });
@@ -69,12 +60,20 @@ class _HomePageState extends State<HomePage> {
       else{
 
      setState(() {
-       list_message.add(Message( content:value.body,isQuesion: false));
+       if(value.body.toString().isNotEmpty){
+         print("isnotempty");
+       list_message.add(Message( content:value.body,isQuesion: false));}
+       else{
+         print("isempty");
+         list_message.add(Message( content:"Sorry I do not have an answer to your question",isQuesion: false));
+
+     }
      });
       }
     });
 
-
+print("at the end");
+print(list_message.last.content);
   }
 
   @override
