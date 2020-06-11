@@ -3,9 +3,10 @@ import 'package:pfa/API/QA.dart';
 import 'package:pfa/Assistant/TextToSpeech.dart';
 import 'package:pfa/Screens/AssistantBubble.dart';
 import 'package:pfa/Screens/BottomPart.dart';
+import 'package:pfa/Screens/TypingBubble.dart';
 import 'package:pfa/Screens/UserBubble.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:http/http.dart' as http;
 import '../Message.dart';
 import 'AppColors.dart';
 
@@ -23,8 +24,10 @@ class _HomePageState extends State<HomePage> {
   List<Message> list_message = [];
   bool isMuted = false;
 
+
   @override
   void initState() {
+
     SharedPreferences.getInstance().then((prefs) {
       setState(() => this.user_name = prefs.getString("name"));
       list_message.add(Message(
@@ -36,41 +39,46 @@ class _HomePageState extends State<HomePage> {
 
   send_message(msg) async {
     _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+
     setState(() {
       list_message.add(Message(content: msg, isQuesion: true));
-      list_message.add(Message( content:"",isQuesion: false));
-
+      list_message.add(Message(content: "", isQuesion: false));
     });
 
-    await QA.send_question(msg).then((value){
-      print(value.body);
+    http.Response value = await QA.send_question(msg);
+
+
+    print(value.body);
+    setState(() {
+      list_message.removeLast();
+    });
+    if (value.statusCode != 200) {
+      print("hi");
       setState(() {
-        print("before");
-        print(list_message);
-        list_message.removeLast();
-        print("after");
-        print(list_message);
+        list_message.add(Message(
+            content: "I am having troubles answering your question, please try again! ",
+            isQuesion: false));
       });
-      if(value.statusCode!=200){
-        print("hi");
-       setState(() {
-         list_message.add(Message( content:"I am having troubles answering your question, please try again! ",isQuesion: false));
-       });
+    }
+    else {
+      if (value.body
+          .toString()
+          .isNotEmpty) {
+        setState(() {
+          list_message.add(Message(content: value.body, isQuesion: false));
+        });
       }
-      else{
-
-     setState(() {
-       if(value.body.toString().isNotEmpty){
-         print("isnotempty");
-       list_message.add(Message( content:value.body,isQuesion: false));}
-       else{
-         print("isempty");
-         list_message.add(Message( content:"Sorry I do not have an answer to your question",isQuesion: false));
-
-     }
-     });
+      else {
+        setState(() {
+          list_message.add(Message(
+              content: "Sorry I do not have an answer to your question",
+              isQuesion: false));
+        });
       }
-    });
+
+    }
+
+
 
 print("at the end");
 print(list_message.last.content);
@@ -174,11 +182,11 @@ print(list_message.last.content);
               itemCount: list_message.length,
               itemBuilder: (context, index) {
                 return !(list_message[index].isQuesion)
-                    ? AssistantBubble(
+                    ? ((list_message[index].content.isNotEmpty)?AssistantBubble(
                         width: screen_width,
                         message: list_message[index].content,
                         isMuted:isMuted,
-                      )
+                      ): TypingBubble(width: screen_width,message: "",isMuted: true,))
                     : UserBubble(
                         width: screen_width,
                         message: list_message[index].content,

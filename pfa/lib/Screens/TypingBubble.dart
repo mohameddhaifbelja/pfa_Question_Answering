@@ -4,32 +4,32 @@ import 'package:pfa/Assistant/TextToSpeech.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'AppColors.dart';
-class AssistantBubble extends StatefulWidget  {
+class TypingBubble extends StatefulWidget  {
   var width;
   String message;
   bool isMuted;
 
-  AssistantBubble({this.width, this.message,this.isMuted});
+  TypingBubble({this.width, this.message,this.isMuted});
 
   @override
-  _AssistantBubbleState createState() => _AssistantBubbleState(width: width,message: message,isMuted:this.isMuted);
+  _TypingBubbleState createState() => _TypingBubbleState(width: width,message: message,isMuted:this.isMuted);
 }
 
-class _AssistantBubbleState extends State<AssistantBubble> {
+class _TypingBubbleState extends State<TypingBubble> {
   var width=0.0;
   String message;
   bool isMuted;
   TextToSpeech textToSpeech;
 
-  _AssistantBubbleState({this.width, this.message,this.isMuted});
+  _TypingBubbleState({this.width, this.message,this.isMuted});
 
 
   @override
   initState(){
     textToSpeech = TextToSpeech();
-if(!isMuted) {
-  textToSpeech.speak(this.message);
-}
+    if(!isMuted) {
+      textToSpeech.speak(this.message);
+    }
     super.initState();
 
   }
@@ -60,15 +60,11 @@ if(!isMuted) {
             elevation: 0,
             nip: BubbleNip.leftBottom,
             color: AppColors.lightBoxColor,
-            child: (message.isNotEmpty)? Text(
-             this.message,
-              textAlign: TextAlign.left,
-              style: TextStyle(color: AppColors.textColor, fontSize: 16),
-            ):Container(
+            child:Container(
               width: width*0.1,
               child: SpinKitThreeBounce(
                 color: AppColors.textColor,
-               // controller: AnimationController(vsync: this, duration: const Duration(milliseconds: 1200)),
+                // controller: AnimationController(vsync: this, duration: const Duration(milliseconds: 1200)),
 
                 size: 18,
               ),
