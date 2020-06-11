@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pfa/Screens/AppColors.dart';
+import 'package:pfa/Screens/HomePage.dart';
 import 'package:pfa/Screens/LoginPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,8 +32,8 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(seconds: 5), () async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       setState(() {
-        var x = prefs.getBool('isConnected ');
-        if (x==null || x==false) {
+        var x = prefs.getString('name');
+        if (x==null || x=="") {
           this.switcher = 1;
         } else {
           this.switcher = 2;
@@ -109,7 +110,7 @@ class _SplashScreenState extends State<SplashScreen> {
       case 1:
         return LoginPage();
       case 2:
-        return Container();
+        return HomePage();
     }
   }
 }

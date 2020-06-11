@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
+import 'package:pfa/Screens/HomePage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
 
@@ -15,6 +17,7 @@ class _LoginPageState extends State<LoginPage> {
   String days = "  ";
   String months = "  ";
   String years = "    ";
+  String name="";
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                                   BorderRadius.all(Radius.circular(10.0))),
                           child: Center(
                             child: TextField(
+                              onChanged: (val){name=val;},
                               textAlign: TextAlign.center,
                               maxLength: 26,
                               style: TextStyle(
@@ -188,6 +192,19 @@ class _LoginPageState extends State<LoginPage> {
                                 borderRadius: BorderRadius.circular(20)),
                             margin: EdgeInsets.only(top: 20),
                             child: FlatButton(
+                              onPressed:() async {
+                                SharedPreferences prefs = await SharedPreferences.getInstance();
+
+                                prefs.setString("name",this.name ).then((bool success) {
+
+                                  if(success){
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => HomePage()),
+                                    );
+                                  }
+                                });
+                              },
                               child: Text(
                                 "Confirm",
                                 style: TextStyle(
