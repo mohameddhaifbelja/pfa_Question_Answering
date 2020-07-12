@@ -26,8 +26,10 @@ class _AssistantBubbleState extends State<AssistantBubble> {
 
   @override
   initState(){
+    print("hi at the start"+isMuted.toString());
     textToSpeech = TextToSpeech();
 if(!isMuted) {
+  print("here");
   textToSpeech.speak(this.message);
 }
     super.initState();

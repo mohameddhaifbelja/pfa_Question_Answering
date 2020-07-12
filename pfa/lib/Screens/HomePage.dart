@@ -23,6 +23,7 @@ class _HomePageState extends State<HomePage> {
   String user_name = "";
   List<Message> list_message = [];
   bool isMuted = false;
+  int i=0;
 
 
   @override
@@ -33,6 +34,8 @@ class _HomePageState extends State<HomePage> {
       list_message.add(Message(
           content: "Hello ${user_name}, How can I help you? ",
           isQuesion: false));
+
+
     });
     super.initState();
   }
@@ -44,6 +47,8 @@ class _HomePageState extends State<HomePage> {
       list_message.add(Message(content: msg, isQuesion: true));
       list_message.add(Message(content: "", isQuesion: false));
     });
+
+
 
     http.Response value = await QA.send_question(msg);
 
